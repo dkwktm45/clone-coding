@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -37,8 +36,10 @@ class PostControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": \"\", \"content\": \"내용입니다.\"}"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.title").value("타이틀을 입력해주세요"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
+                .andExpect(jsonPath("$.validation.title").value("타이틀을 입력해주세요"))
                 .andDo(print());
     }
 }
