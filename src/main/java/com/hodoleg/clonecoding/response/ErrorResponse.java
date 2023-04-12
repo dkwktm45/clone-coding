@@ -1,5 +1,6 @@
 package com.hodoleg.clonecoding.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +15,6 @@ import java.util.Map;
  *         "title : "제목이 없습니다."
  *     }
  * }*/
-@RequiredArgsConstructor
 @Getter
 public class ErrorResponse {
     private final String code;
@@ -23,6 +23,10 @@ public class ErrorResponse {
     public void addValidation(String filedName, String errorMessage){
         this.validation.put(filedName,errorMessage);
     }
-
+    @Builder
+    public ErrorResponse(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 }
 

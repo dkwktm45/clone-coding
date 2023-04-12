@@ -2,6 +2,7 @@ package com.hodoleg.clonecoding.request;
 
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,5 +15,15 @@ public class PostCreate {
     private String title;
     @NotBlank(message = "내용을 입력해주세요")
     private String content;
-
+    @Builder
+    public PostCreate(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+    /**
+     * 빌더의 장점
+     *  - 가독성에 좋다. (생성자가 여러개가 있을때)
+     *  - 필요한 값만 받을 수 있다.
+     *  - 객체의 불변성
+     */
 }

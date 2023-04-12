@@ -18,10 +18,13 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     // 자칫 기존 컨트롤러에서 사용을 했기에 가능했다고 생각할 수 있지만
-    // 응답 본문에 담는 역할을 하기 때문에 advice에도 넣어줘야한다.
+    // 응답 본문에 담는 역할을 하기 때문에 아래 클래스에서도 @ResponseBody를 달아줘야한다.
     @ResponseBody
     public ErrorResponse invalidRequestHandler(MethodArgumentNotValidException e) {
-        ErrorResponse errorResponse = new ErrorResponse("400", "잘못된 요청입니다.");
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code("400")
+                .message("잘못된 요청입니다.")
+                .build();
 
         for(FieldError fieldError : e.getFieldErrors()){
             errorResponse.addValidation(fieldError.getField(),fieldError.getDefaultMessage());
