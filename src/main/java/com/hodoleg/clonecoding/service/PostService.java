@@ -19,4 +19,9 @@ public class PostService {
         Post post = Post.builder().title(postCreate.getTitle()).content(postCreate.getContent()).build();
         postRepository.save(post);
     }
+
+    public Post get(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+    }
 }

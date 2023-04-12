@@ -1,5 +1,6 @@
 package com.hodoleg.clonecoding.controller;
 
+import com.hodoleg.clonecoding.domain.Post;
 import com.hodoleg.clonecoding.request.PostCreate;
 import com.hodoleg.clonecoding.service.PostService;
 import jakarta.validation.Valid;
@@ -22,6 +23,15 @@ public class PostController {
         // case2 id를 넘겨주는경우
         // case3 응답 필요가 없음 --> post글 데이터 저장하는 경우
         postService.write(request);
+    }
+
+    /**
+     * /posts -> 글 전체 조회(검색 + 페이징 처리)
+     * /posts/{postId} -> 글 한개만 조회
+     */
+    @GetMapping("/posts/{postId}")
+    public Post get(@PathVariable(name = "postId") Long id){
+        return postService.get(id);
     }
 }
 
