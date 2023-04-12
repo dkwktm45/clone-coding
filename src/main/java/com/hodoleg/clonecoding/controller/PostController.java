@@ -1,7 +1,7 @@
 package com.hodoleg.clonecoding.controller;
 
-import com.hodoleg.clonecoding.domain.Post;
 import com.hodoleg.clonecoding.request.PostCreate;
+import com.hodoleg.clonecoding.response.PostResponse;
 import com.hodoleg.clonecoding.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class PostController {
      * /posts/{postId} -> 글 한개만 조회
      */
     @GetMapping("/posts/{postId}")
-    public Post get(@PathVariable(name = "postId") Long id){
+    public PostResponse get(@PathVariable(name = "postId") Long id){
         return postService.get(id);
     }
 }
