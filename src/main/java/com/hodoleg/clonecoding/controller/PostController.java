@@ -1,11 +1,15 @@
 package com.hodoleg.clonecoding.controller;
 
+import com.hodoleg.clonecoding.domain.Post;
 import com.hodoleg.clonecoding.request.PostCreate;
 import com.hodoleg.clonecoding.response.PostResponse;
 import com.hodoleg.clonecoding.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
 
@@ -33,5 +37,11 @@ public class PostController {
     public PostResponse get(@PathVariable(name = "postId") Long id){
         return postService.get(id);
     }
+
+    @GetMapping("/posts")
+    public List<PostResponse> getList(){
+        return postService.getList();
+    }
+    
 }
 

@@ -4,6 +4,8 @@ import com.hodoleg.clonecoding.domain.Post;
 import com.hodoleg.clonecoding.request.PostCreate;
 import com.hodoleg.clonecoding.response.PostResponse;
 import com.hodoleg.clonecoding.respository.PostRepository;
+
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+
+
 
 @SpringBootTest
 class PostServiceTest {
@@ -58,6 +64,26 @@ class PostServiceTest {
         assertEquals("foo",post.getTitle());
         assertEquals("bar",post.getContent());
     }
+    @Test
+    @DisplayName("글 여러개 조회")
+    void test3(){
+        //given
+        postRepository.saveAll(List.of(
+            Post.builder()
+                .title("foo")
+                .content("bar")
+                .build(),
+            Post.builder()
+                .title("foo2")
+                .content("bar2")
+                .build()));
+        //when
+        List<PostResponse> post = postService.getList();
 
+
+        //then
+        assertEquals(2L,post.size());
+
+    }
 
 }

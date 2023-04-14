@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hodoleg.clonecoding.domain.Post;
 import com.hodoleg.clonecoding.request.PostCreate;
 import com.hodoleg.clonecoding.respository.PostRepository;
+
+import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
+import java.util.List;
 
 
 @AutoConfigureMockMvc
@@ -38,7 +43,7 @@ class PostControllerTest {
         postRepository.deleteAll();
     }
     @Test
-    @DisplayName("/posts 요청시 hello spring를 출력한다.")
+    @DisplayName("/posts 요청시 데이터 저장")
     void test() throws Exception{
         //given
         PostCreate req = PostCreate.builder()
@@ -118,6 +123,33 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.title").value("foo"))
                 .andExpect(jsonPath("$.content").value("bar"))
                 .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("글 여러개 조회")
+    void test5() throws Exception{
+        //given
+        Post requestPost = postRepository.save(Post.builder()
+                                .title("foo")
+                                .content("bar")
+                                .build());
+        
+        Post requestPost2 = postRepository.save(Post.builder()
+                                .title("foo2")
+                                .content("bar2")
+                                .build());
+        
+        // expected
+        mockMvc.perform(get("/posts")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(requestPost.getId()))
+                .andExpect(jsonPath("$[0].title").value("foo"))
+                .andExpect(jsonPath("$[0].content").value("bar"))
+                .andDo(print());
+
 
     }
 

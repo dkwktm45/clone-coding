@@ -6,6 +6,11 @@ import com.hodoleg.clonecoding.response.PostResponse;
 import com.hodoleg.clonecoding.respository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -28,5 +33,11 @@ public class PostService {
                 .id(post.getId())
                 .content(post.getContent())
                 .title(post.getTitle()).build();
+    }
+
+    public List<PostResponse> getList(){
+        return postRepository.findAll().stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
     }
 }
