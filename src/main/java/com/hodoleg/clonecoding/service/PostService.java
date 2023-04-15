@@ -8,9 +8,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -35,8 +37,8 @@ public class PostService {
                 .title(post.getTitle()).build();
     }
 
-    public List<PostResponse> getList(){
-        return postRepository.findAll().stream()
+    public List<PostResponse> getList(Pageable page){
+        return postRepository.findAll(page).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
     }

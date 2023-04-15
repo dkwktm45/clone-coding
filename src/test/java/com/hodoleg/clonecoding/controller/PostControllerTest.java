@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 @AutoConfigureMockMvc
@@ -130,24 +133,23 @@ class PostControllerTest {
     @DisplayName("글 여러개 조회")
     void test5() throws Exception{
         //given
-        Post requestPost = postRepository.save(Post.builder()
-                                .title("foo")
-                                .content("bar")
-                                .build());
+        List<Post> requestPosts = IntStream.range(1, 31)
+                                    .mapToObj(i -> {
+                                        return Post.builder()
+                                            .title("호돌맨 제목 " + i)
+                                            .content("호돌맨 내용 " + i).build();
+                                    }).collect(Collectors.toList());
         
-        Post requestPost2 = postRepository.save(Post.builder()
-                                .title("foo2")
-                                .content("bar2")
-                                .build());
+        postRepository.saveAll(requestPosts);
         
         // expected
-        mockMvc.perform(get("/posts")
+        mockMvc.perform(get("/posts?page=1&sort=id,desc&size=5")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value(requestPost.getId()))
-                .andExpect(jsonPath("$[0].title").value("foo"))
-                .andExpect(jsonPath("$[0].content").value("bar"))
+                .andExpect(jsonPath("$.length()").value(5))
+                .andExpect(jsonPath("$[0].id").value(30L))
+                .andExpect(jsonPath("$[0].title").value("호돌맨 제목 30"))
+                .andExpect(jsonPath("$[0].content").value("호돌맨 내용 30"))
                 .andDo(print());
 
 
