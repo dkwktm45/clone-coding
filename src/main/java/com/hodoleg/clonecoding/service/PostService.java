@@ -2,6 +2,7 @@ package com.hodoleg.clonecoding.service;
 
 import com.hodoleg.clonecoding.domain.Post;
 import com.hodoleg.clonecoding.request.PostCreate;
+import com.hodoleg.clonecoding.request.PostSearch;
 import com.hodoleg.clonecoding.response.PostResponse;
 import com.hodoleg.clonecoding.respository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -37,8 +35,8 @@ public class PostService {
                 .title(post.getTitle()).build();
     }
 
-    public List<PostResponse> getList(Pageable page){
-        return postRepository.findAll(page).stream()
+    public List<PostResponse> getList(PostSearch postSearch){
+        return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
     }

@@ -1,18 +1,15 @@
 package com.hodoleg.clonecoding.controller;
 
-import com.hodoleg.clonecoding.domain.Post;
 import com.hodoleg.clonecoding.request.PostCreate;
+import com.hodoleg.clonecoding.request.PostSearch;
 import com.hodoleg.clonecoding.response.PostResponse;
 import com.hodoleg.clonecoding.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.*;
 
 
 
@@ -41,8 +38,8 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getList(@PageableDefault Pageable pageable){
-        return postService.getList(pageable);
+    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch){
+        return postService.getList(postSearch);
     }
     
 }

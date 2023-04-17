@@ -4,28 +4,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hodoleg.clonecoding.domain.Post;
 import com.hodoleg.clonecoding.request.PostCreate;
 import com.hodoleg.clonecoding.respository.PostRepository;
-
-import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.http.MediaType.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @AutoConfigureMockMvc
@@ -130,10 +127,10 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 여러개 조회")
+    @DisplayName("페이지를 0으로 요청하면 첫 페이지를 가져올 수 있는가?")
     void test5() throws Exception{
         //given
-        List<Post> requestPosts = IntStream.range(1, 31)
+        List<Post> requestPosts = IntStream.range(1, 20)
                                     .mapToObj(i -> {
                                         return Post.builder()
                                             .title("호돌맨 제목 " + i)
@@ -143,13 +140,13 @@ class PostControllerTest {
         postRepository.saveAll(requestPosts);
         
         // expected
-        mockMvc.perform(get("/posts?page=1&sort=id,desc&size=5")
+        mockMvc.perform(get("/posts?page=0&sort=id,desc&size=10")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(5))
-                .andExpect(jsonPath("$[0].id").value(30L))
-                .andExpect(jsonPath("$[0].title").value("호돌맨 제목 30"))
-                .andExpect(jsonPath("$[0].content").value("호돌맨 내용 30"))
+                .andExpect(jsonPath("$.length()").value(10))
+                .andExpect(jsonPath("$[0].id").value(19L))
+                .andExpect(jsonPath("$[0].title").value("호돌맨 제목 19"))
+                .andExpect(jsonPath("$[0].content").value("호돌맨 내용 19"))
                 .andDo(print());
 
 
