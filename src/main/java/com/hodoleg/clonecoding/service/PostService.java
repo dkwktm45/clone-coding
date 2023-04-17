@@ -1,10 +1,13 @@
 package com.hodoleg.clonecoding.service;
 
 import com.hodoleg.clonecoding.domain.Post;
+import com.hodoleg.clonecoding.domain.PostEditor;
 import com.hodoleg.clonecoding.request.PostCreate;
+import com.hodoleg.clonecoding.request.PostEdit;
 import com.hodoleg.clonecoding.request.PostSearch;
 import com.hodoleg.clonecoding.response.PostResponse;
 import com.hodoleg.clonecoding.respository.PostRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,5 +42,19 @@ public class PostService {
         return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
+    }
+    @Transactional
+    public PostResponse edit(Long id, PostEdit postEdit){
+        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
+
+        PostEditor postEditor = editorBuilder.title(postEdit.getTitle()).content(postEdit.getContent()).build();
+
+        post.edit(postEditor);
+
+        postRepository.save(post);
+
+        return new PostResponse(post);
     }
 }

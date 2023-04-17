@@ -3,6 +3,7 @@ package com.hodoleg.clonecoding.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hodoleg.clonecoding.domain.Post;
 import com.hodoleg.clonecoding.request.PostCreate;
+import com.hodoleg.clonecoding.request.PostEdit;
 import com.hodoleg.clonecoding.respository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,8 +19,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -148,8 +148,27 @@ class PostControllerTest {
                 .andExpect(jsonPath("$[0].title").value("호돌맨 제목 19"))
                 .andExpect(jsonPath("$[0].content").value("호돌맨 내용 19"))
                 .andDo(print());
-
-
     }
+    @Test
+    @DisplayName("글 제목 수정")
+    void test6() throws Exception{
+        //given
+        Post post = Post.builder()
+                .title("호돌맨 제목")
+                .content("호돌맨 내용").build();
 
+
+        postRepository.save(post);
+        PostEdit postEdit = PostEdit.builder()
+                .title("제목 수정")
+                .content("호돌맨 내용")
+                .build();
+
+        // expected
+        mockMvc.perform(patch("/posts/{postId}",post.getId())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(postEdit)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 }
