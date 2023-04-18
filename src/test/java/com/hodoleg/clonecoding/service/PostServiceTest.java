@@ -1,6 +1,7 @@
 package com.hodoleg.clonecoding.service;
 
 import com.hodoleg.clonecoding.domain.Post;
+import com.hodoleg.clonecoding.exception.PostNotFound;
 import com.hodoleg.clonecoding.request.PostCreate;
 import com.hodoleg.clonecoding.request.PostEdit;
 import com.hodoleg.clonecoding.request.PostSearch;
@@ -152,4 +153,62 @@ class PostServiceTest {
         assertEquals(0,postRepository.count());
     }
 
+    @Test
+    @DisplayName("게시글 삭제 - 실패")
+    void test8() {
+        //given
+        Post post = Post.builder()
+                .title("호돌맨 제목")
+                .content("호돌맨 내용").build();
+
+
+        postRepository.save(post);
+
+        //expected
+        PostNotFound e =Assertions.assertThrows(PostNotFound.class, () -> {
+            postService.delete(post.getId() + 1);
+        });
+
+        assertEquals("존재하지 않는 글입니다." , e.getMessage());
+    }
+    @Test
+    @DisplayName("글 1개 조회 실패")
+    void test7() {
+        //given
+        Post requestPost = Post.builder()
+                .title("이진영")
+                .content("월산동")
+                .build();
+        postRepository.save(requestPost);
+        //
+        //expected
+        PostNotFound e =Assertions.assertThrows(PostNotFound.class, () -> {
+            postService.get(requestPost.getId() + 1);
+        });
+
+        assertEquals("존재하지 않는 글입니다." , e.getMessage());
+
+    }
+    @Test
+    @DisplayName("글 수정 - 실패")
+    void test9() {
+        //given
+        Post post = Post.builder()
+                .title("호돌맨 제목")
+                .content("호돌맨 내용").build();
+
+
+        postRepository.save(post);
+        PostEdit postEdit = PostEdit.builder()
+                .title("제목 수정")
+                .content(null)
+                .build();
+        //expected
+        PostNotFound e =Assertions.assertThrows(PostNotFound.class, () -> {
+            postService.edit(post.getId() + 1,postEdit);
+        });
+
+        assertEquals("존재하지 않는 글입니다." , e.getMessage());
+
+    }
 }

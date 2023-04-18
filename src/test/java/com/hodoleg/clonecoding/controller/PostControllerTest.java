@@ -179,7 +179,6 @@ class PostControllerTest {
                 .title("호돌맨 제목")
                 .content("호돌맨 내용").build();
 
-
         postRepository.save(post);
 
         // expected
@@ -188,4 +187,26 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
     }
+    @Test
+    @DisplayName("글 한개 조회 실패")
+    void test8() throws Exception{
+        //given
+        Post post = Post.builder()
+                .title("이진영")
+                .content("월산동")
+                .build();
+
+        postRepository.save(post);
+
+        // expected
+        mockMvc.perform(get("/posts/{postId}",post.getId())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(post.getId()))
+                .andExpect(jsonPath("$.title").value("foo"))
+                .andExpect(jsonPath("$.content").value("bar"))
+                .andDo(print());
+
+    }
+
 }
