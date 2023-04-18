@@ -44,5 +44,9 @@ public class PostController {
     public void getList(@PathVariable(name = "postId") Long id , @RequestBody @Valid PostEdit postEdit){
         postService.edit(id , postEdit); // 가끔 응답을 넘겨주는 경우도 있다. 클라이언트에 따라 다름
     }
+    @DeleteMapping("/posts/{postId}")
+    public void delete(@PathVariable(name = "postId") Long id ){
+        postService.delete(id);
+    }
 }
 
