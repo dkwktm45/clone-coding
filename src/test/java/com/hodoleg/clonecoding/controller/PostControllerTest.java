@@ -66,6 +66,7 @@ class PostControllerTest {
     void test2() throws Exception{
         //given
         PostCreate req = PostCreate.builder()
+                .title(null)
                 .content("내용입니다.")
                 .build();
 
@@ -188,25 +189,48 @@ class PostControllerTest {
                 .andDo(print());
     }
     @Test
-    @DisplayName("글 한개 조회 실패")
+    @DisplayName("존재하지 않는 글 조회")
     void test8() throws Exception{
-        //given
-        Post post = Post.builder()
-                .title("이진영")
-                .content("월산동")
-                .build();
-
-        postRepository.save(post);
-
         // expected
-        mockMvc.perform(get("/posts/{postId}",post.getId())
+        mockMvc.perform(get("/posts/{postId}",1L)
                         .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(post.getId()))
-                .andExpect(jsonPath("$.title").value("foo"))
-                .andExpect(jsonPath("$.content").value("bar"))
+                .andExpect(status().isNotFound())
                 .andDo(print());
 
     }
 
+    @Test
+    @DisplayName("존재하지 않는 글 수정")
+    void test9() throws Exception{
+        //given
+        PostEdit postEdit = PostEdit.builder()
+                .title("제목 수정")
+                .content("호돌맨 내용")
+                .build();
+
+        // expected
+        mockMvc.perform(patch("/posts/{postId}",1L)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(postEdit)))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+    @Test
+    @DisplayName("게시글 작성시 제목에 바보는 포함될 수 없다.")
+    void test10() throws Exception{
+        //given
+        PostCreate req = PostCreate.builder()
+                .title("바보입니다.")
+                .content("내용입니다.")
+                .build();
+
+        String json = objectMapper.writeValueAsString(req);
+
+        // expected
+        mockMvc.perform(post("/posts")
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
 }

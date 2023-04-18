@@ -1,12 +1,11 @@
 package com.hodoleg.clonecoding.request;
 
 
+import com.hodoleg.clonecoding.exception.InvalidRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 
 @Getter
@@ -21,10 +20,9 @@ public class PostCreate {
         this.title = title;
         this.content = content;
     }
-    /**
-     * 빌더의 장점
-     *  - 가독성에 좋다. (생성자가 여러개가 있을때)
-     *  - 필요한 값만 받을 수 있다.
-     *  - 객체의 불변성
-     */
+    public void validate(){
+        if(title.contains("바보")){
+            throw new InvalidRequest("title", "타이틀에 바보를 포함할 수 없습니다.");
+        }
+    }
 }
