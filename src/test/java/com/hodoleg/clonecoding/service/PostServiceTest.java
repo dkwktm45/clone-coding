@@ -102,7 +102,30 @@ class PostServiceTest {
         postRepository.save(post);
         PostEdit postEdit = PostEdit.builder()
                 .title("제목 수정")
-                .content("호돌맨 내용")
+                .content(null)
+                .build();
+        //when
+        postService.edit(post.getId(),postEdit);
+        //then
+        Post changePost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다. id = " + post.getId()));
+        assertEquals("제목 수정",changePost.getTitle());
+
+    }
+
+    @Test
+    @DisplayName("글 수정 - content 값이 null인 경우")
+    void test5() {
+        //given
+        Post post = Post.builder()
+                .title("호돌맨 제목")
+                .content("호돌맨 내용").build();
+
+
+        postRepository.save(post);
+        PostEdit postEdit = PostEdit.builder()
+                .title("제목 수정")
+                .content(null)
                 .build();
         //when
         postService.edit(post.getId(),postEdit);
@@ -112,6 +135,5 @@ class PostServiceTest {
         assertEquals("제목 수정",changePost.getTitle());
         assertEquals("호돌맨 내용",changePost.getContent());
     }
-
 
 }
