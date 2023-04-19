@@ -1,8 +1,9 @@
 <template>
+
   <div>
-    <h2>{{ post.title }}</h2>
-    <div>{{ post.content }}</div>
-    <el-button @click="moveToEdit()" type="warning">
+    <h2 class="border border-primary-subtle p-2">{{ post.title }}</h2>
+    <div class="w-100 h-50">{{ post.content }}</div>
+    <el-button class="float-end" @click="moveToEdit()" type="warning">
       수정
     </el-button>
   </div>

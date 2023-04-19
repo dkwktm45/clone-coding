@@ -6,7 +6,7 @@
     <el-input v-model="content" type="textarea" rows="15"></el-input>
   </div>
   <div class="mt-2">
-    <el-button type="primary" @click="write()">글 작성완료</el-button>
+    <el-button class="float-end" type="primary" @click="write()">글 작성완료</el-button>
   </div>
 </template>
 

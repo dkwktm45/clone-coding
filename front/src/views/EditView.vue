@@ -7,7 +7,7 @@
       <el-input v-model="post.content" type="textarea" rows="15"></el-input>
     </div>
     <div class="mt-2">
-      <el-button type="warning" @click="edit()">글 작성완료</el-button>
+      <el-button class="float-end" type="warning" @click="edit()">글 작성완료</el-button>
     </div>
   </div>
 </template>
