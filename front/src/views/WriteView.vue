@@ -13,15 +13,23 @@
 <script setup lang="ts">
 import axios from "axios";
 import {ref} from "vue";
+import {useRouter} from "vue-router";
+
 const title = ref("")
+
 const content = ref("")
+
 const count = ref(0);
 
+const router = useRouter();
+
 const write = () => {
-  axios.post("http://localhost:8080/posts",{
+  axios.post("/api/posts",{
     title: title.value,
     content: content.value
-  })
+  }).then(() => {
+    router.replace({name:"home"})
+  });
 }
 </script>
 
