@@ -43,7 +43,7 @@ class PostControllerTest {
         postRepository.deleteAll();
     }
     @Test
-    @DisplayName("/posts 요청시 데이터 저장")
+    @DisplayName("글 작성시 요청시 데이터 저장")
     void test() throws Exception{
         //given
         PostCreate req = PostCreate.builder()
@@ -56,13 +56,13 @@ class PostControllerTest {
         // expected
         mockMvc.perform(post("/posts")
                         .contentType(APPLICATION_JSON)
-                        .content(json))
+                        .content(json).header("authorization","hodolog"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
     @Test
-    @DisplayName("/posts 요청시 title값은 필수다.")
+    @DisplayName("글 작성시 요청시 title값은 필수다.")
     void test2() throws Exception{
         //given
         PostCreate req = PostCreate.builder()
@@ -75,7 +75,7 @@ class PostControllerTest {
         // expected
         mockMvc.perform(post("/posts")
                         .contentType(APPLICATION_JSON)
-                        .content(json))
+                        .content(json).header("authorization","hodolog"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("400"))
                 .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
@@ -96,7 +96,7 @@ class PostControllerTest {
         // expected
         mockMvc.perform(post("/posts")
                         .contentType(APPLICATION_JSON)
-                        .content(json))
+                        .content(json).header("authorization","hodolog"))
                 .andExpect(status().isOk())
                 .andDo(print());
 
