@@ -19,16 +19,20 @@ public class PostController {
 
     private final PostService postService;
 
+    @GetMapping("/test")
+    public String test(){
+        return "hello";
+    }
+    @GetMapping("/foo")
+    public String foo(){
+        return "foo";
+    }
     @PostMapping("/posts")
-    public void get(@RequestBody @Valid PostCreate request,@RequestHeader String authorization) {
-        // 인증 방식
-        // 1. GET Parameter -> 많이 사용
-        // 2. POST(body) value
-        // 3. Header
-        if(authorization.equals("hodolog")){
+    public void get(@RequestBody @Valid PostCreate request) {
+
+
             request.validate();
             postService.write(request);
-        }
     }
 
     /**
