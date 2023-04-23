@@ -1,6 +1,6 @@
 package com.hodoleg.clonecoding.controller;
 
-import com.hodoleg.clonecoding.controller.data.UserSession;
+import com.hodoleg.clonecoding.config.data.UserSession;
 import com.hodoleg.clonecoding.request.PostCreate;
 import com.hodoleg.clonecoding.request.PostEdit;
 import com.hodoleg.clonecoding.request.PostSearch;
@@ -21,8 +21,8 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/foo")
-    public String foo(UserSession userSession){
-        return userSession.name;
+    public Long foo(UserSession userSession){
+        return userSession.id;
     }
     @PostMapping("/posts")
     public void get(@RequestBody @Valid PostCreate request) {
