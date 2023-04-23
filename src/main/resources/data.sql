@@ -1,0 +1,1 @@
+INSERT INTO `auth_user` (name, email, password, created_at) values ('호돌맨','hodoman88@gmail.com','1234','2022-11-22 16:00:00')
