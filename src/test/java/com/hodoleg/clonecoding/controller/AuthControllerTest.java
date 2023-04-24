@@ -2,6 +2,7 @@ package com.hodoleg.clonecoding.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hodoleg.clonecoding.domain.AuthUser;
+import com.hodoleg.clonecoding.domain.Session;
 import com.hodoleg.clonecoding.request.Login;
 import com.hodoleg.clonecoding.respository.SessionRepository;
 import com.hodoleg.clonecoding.respository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -89,5 +91,42 @@ class AuthControllerTest {
                 .andDo(print());
 
     }
+    @Test
+    @DisplayName("로그인 후 권한이 필요한 페이지 접속한다. /foo")
+    void test3() throws Exception{
+        //given
+        AuthUser authUser = AuthUser.builder()
+                .name("호돌맨")
+                .email("hodoman88@gmail.com")
+                .password("1234").build();
+        Session session = authUser.addSession();
+        userRepository.save(authUser);
 
+        // expected
+        mockMvc.perform(get("/foo")
+                        .header("Authorization",session.getAccessToken())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+    }
+    @Test
+    @DisplayName("로그인 후 검증되지 않은 세션값으로 권한이 필요한 페이지 접속할 수 없다. /foo")
+    void test4() throws Exception{
+        //given
+        AuthUser authUser = AuthUser.builder()
+                .name("호돌맨")
+                .email("hodoman88@gmail.com")
+                .password("1234").build();
+        Session session = authUser.addSession();
+        userRepository.save(authUser);
+
+        // expected
+        mockMvc.perform(get("/foo")
+                        .header("Authorization",session.getAccessToken() + "wf2")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+
+    }
 }
