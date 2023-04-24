@@ -12,14 +12,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockCookie;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.HeaderResultMatchers;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -66,7 +67,7 @@ class AuthControllerTest {
                 .andDo(print());
     }
     @Test
-    @DisplayName("로그인 생성 후 세션객체 응답")
+    @DisplayName("로그인 생성 후 쿠키 응답")
     void test2() throws Exception{
         //given
         userRepository.save(AuthUser.builder()
@@ -87,7 +88,7 @@ class AuthControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accessToken").exists())
+                .andExpect(cookie().doesNotExist("unknownCookie"))
                 .andDo(print());
 
     }
@@ -100,11 +101,12 @@ class AuthControllerTest {
                 .email("hodoman88@gmail.com")
                 .password("1234").build();
         Session session = authUser.addSession();
-        userRepository.save(authUser);
 
+        userRepository.save(authUser);
+        MockCookie mockCookie = new MockCookie("SESSION",session.getAccessToken());
         // expected
         mockMvc.perform(get("/foo")
-                        .header("Authorization",session.getAccessToken())
+                        .cookie(mockCookie)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -119,11 +121,13 @@ class AuthControllerTest {
                 .email("hodoman88@gmail.com")
                 .password("1234").build();
         Session session = authUser.addSession();
+
         userRepository.save(authUser);
+        MockCookie mockCookie = new MockCookie("SESSION",session.getAccessToken()+"123sd");
 
         // expected
         mockMvc.perform(get("/foo")
-                        .header("Authorization",session.getAccessToken() + "wf2")
+                        .cookie(mockCookie)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andDo(print());

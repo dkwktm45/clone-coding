@@ -7,12 +7,14 @@ import com.hodoleg.clonecoding.response.SessionResponse;
 import com.hodoleg.clonecoding.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
 
+    @Transactional
     public SessionResponse signin(Login login){
         AuthUser authUser = userRepository.findByEmailAndPassword(login.getEmail(),login.getPassword())
                 .orElseThrow(() -> new InvalidSigninInformation());

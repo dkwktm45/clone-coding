@@ -7,4 +7,7 @@ Content-Type: application/json
   "password": "1234"
 }
 
-
+### 인증 페이지 요청
+GET http://localhost:8080/foo
+Content-Type: application/json
+Cookie: b7367989-f00b-4fbf-a7c6-5aa0945751ce
