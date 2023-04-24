@@ -15,9 +15,9 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Transactional
-    public SessionResponse signin(Login login){
+    public Long signin(Login login){
         AuthUser authUser = userRepository.findByEmailAndPassword(login.getEmail(),login.getPassword())
                 .orElseThrow(() -> new InvalidSigninInformation());
-        return new SessionResponse(authUser.addSession().getAccessToken());
+        return authUser.getId();
     }
 }

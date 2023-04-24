@@ -3,8 +3,12 @@ package com.hodoleg.clonecoding.controller;
 import com.hodoleg.clonecoding.request.Login;
 import com.hodoleg.clonecoding.response.SessionResponse;
 import com.hodoleg.clonecoding.service.AuthService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Key;
 import java.time.Duration;
 
 @RestController @Slf4j
@@ -20,10 +25,14 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/auth/login")
-    public ResponseEntity<Object> login(@RequestBody Login login){
-        String accessToken = authService.signin(login).getAccessToken();
+    private static final String KEY = "e4c4bpT90UfRmmnmlS2Qt9p/O8VU2Xk2NKxVOeRNMVI=";
 
+    @PostMapping("/auth/login")
+    public SessionResponse login(@RequestBody Login login){
+        Long id = authService.signin(login);
+
+
+        /* 쿠키 방식
         ResponseCookie cookie = ResponseCookie.from("SESSION",accessToken)
                 .domain("localhost") // todo 서버 환경에 따른 분리 필요
                 .path("/")
@@ -32,8 +41,11 @@ public class AuthController {
                 .sameSite("Strict") // todo SamSite에 대해 왜 쓰는지 알아두자
                 .build();
         log.info(">>> cookie = {}",cookie.toString());
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .build();
+        */
+
+        Key key = Keys.hmacShaKeyFor(Base64.decodeBase64(KEY));
+
+        String jws = Jwts.builder().setSubject(String.valueOf(id)).signWith(key).compact();
+        return new SessionResponse(jws);
     }
 }
