@@ -1,36 +1,29 @@
 package com.hodoleg.clonecoding.controller;
 
+import com.hodoleg.clonecoding.config.AppConfig;
 import com.hodoleg.clonecoding.request.Login;
 import com.hodoleg.clonecoding.response.SessionResponse;
 import com.hodoleg.clonecoding.service.AuthService;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Key;
-import java.time.Duration;
+import java.util.Date;
 
 @RestController @Slf4j
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
-
-    private static final String KEY = "e4c4bpT90UfRmmnmlS2Qt9p/O8VU2Xk2NKxVOeRNMVI=";
-
+    private final AppConfig appConfig;
     @PostMapping("/auth/login")
     public SessionResponse login(@RequestBody Login login){
         Long id = authService.signin(login);
-
 
         /* 쿠키 방식
         ResponseCookie cookie = ResponseCookie.from("SESSION",accessToken)
@@ -43,9 +36,13 @@ public class AuthController {
         log.info(">>> cookie = {}",cookie.toString());
         */
 
-        Key key = Keys.hmacShaKeyFor(Base64.decodeBase64(KEY));
+        Key key = Keys.hmacShaKeyFor(appConfig.getJwtKey());
 
-        String jws = Jwts.builder().setSubject(String.valueOf(id)).signWith(key).compact();
+        String jws = Jwts.builder()
+                .setSubject(String.valueOf(id))
+                .signWith(key)
+                .setIssuedAt(new Date())
+                .compact();
         return new SessionResponse(jws);
     }
 }

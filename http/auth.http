@@ -10,4 +10,4 @@ Content-Type: application/json
 ### 인증 페이지 요청
 GET http://localhost:8080/foo
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.-i7lmMr_VF6wWZuuHRL1Zv7vJ9gpfnXvvY0wfvVOw48
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjgyNDAzMDU0fQ.U1y6mCbkC3f_uA33pBBpQX8zRfhzrt9nKLgrVf5WDVo
