@@ -3,11 +3,11 @@ package com.hodoleg.clonecoding.response;
 import lombok.Getter;
 
 @Getter
-public class SessionResponse {
+public class TokenResponse {
 
     private final String accessToken;
 
-    public SessionResponse(String accessToken) {
+    public TokenResponse(String accessToken) {
         this.accessToken = accessToken;
     }
 }

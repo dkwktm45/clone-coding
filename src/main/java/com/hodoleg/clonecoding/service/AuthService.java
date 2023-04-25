@@ -36,7 +36,7 @@ public class AuthService {
             throw new AlreadyExistsEmailException();
         }
 
-        String encoderPassword = encoder.encrpto(signUp.getPassword());
+        String encoderPassword = encoder.encrypt(signUp.getPassword());
 
         var authUser = AuthUser.builder()
                 .name(signUp.getName())

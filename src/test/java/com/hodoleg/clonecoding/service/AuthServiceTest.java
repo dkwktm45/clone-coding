@@ -13,10 +13,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class AuthServiceTest {
     @Autowired
     private UserRepository userRepository;
@@ -73,7 +75,7 @@ class AuthServiceTest {
     @DisplayName("로그인 성공")
     void test3() {
         //given
-        String encryptedPassword = encoder.encrpto("1234");
+        String encryptedPassword = encoder.encrypt("1234");
 
         AuthUser authUser = AuthUser.builder()
                 .name("LeeJinYoung")

@@ -6,14 +6,17 @@ import com.hodoleg.clonecoding.domain.Session;
 import com.hodoleg.clonecoding.request.Login;
 import com.hodoleg.clonecoding.request.SignUp;
 import com.hodoleg.clonecoding.respository.UserRepository;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockCookie;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @SpringBootTest
 class AuthControllerTest {
     @Autowired
@@ -32,7 +36,6 @@ class AuthControllerTest {
 
     @Autowired
     private UserRepository userRepository;
-
     @BeforeEach
     void clean(){
         userRepository.deleteAll();
@@ -63,7 +66,7 @@ class AuthControllerTest {
                 .andDo(print());
     }
     @Test
-    @DisplayName("로그인 생성 후 쿠키 응답")
+    @DisplayName("로그인 생성 후 세션 응답")
     void test2() throws Exception{
         //given
         userRepository.save(AuthUser.builder()
@@ -84,7 +87,7 @@ class AuthControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
-                .andExpect(cookie().doesNotExist("unknownCookie"))
+                .andExpect(jsonPath("$.accessToken").exists())
                 .andDo(print());
 
     }
@@ -96,13 +99,23 @@ class AuthControllerTest {
                 .name("호돌맨")
                 .email("hodoman88@gmail.com")
                 .password("1234").build();
-        Session session = authUser.addSession();
 
         userRepository.save(authUser);
-        MockCookie mockCookie = new MockCookie("SESSION",session.getAccessToken());
+
+        String json = objectMapper.writeValueAsString(Login.builder()
+                .email(authUser.getEmail())
+                .password(authUser.getPassword()).build());
+
+        MvcResult mvcResult = mockMvc.perform(post("/auth/login")
+                        .content(json)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        JSONParser jsonParser = new JSONParser();
+        JSONObject authorization = (JSONObject) jsonParser.parse(mvcResult.getResponse().getContentAsString());
         // expected
         mockMvc.perform(get("/foo")
-                        .cookie(mockCookie)
+                        .header("Authorization",authorization.get("accessToken"))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -118,11 +131,10 @@ class AuthControllerTest {
         Session session = authUser.addSession();
 
         userRepository.save(authUser);
-        MockCookie mockCookie = new MockCookie("SESSION",session.getAccessToken()+"123sd");
 
         // expected
         mockMvc.perform(get("/foo")
-                        .cookie(mockCookie)
+                        .header("Authorization","ewflwennn31r3n1pmdwdw")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andDo(print());

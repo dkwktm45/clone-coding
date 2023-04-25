@@ -3,7 +3,7 @@ package com.hodoleg.clonecoding.controller;
 import com.hodoleg.clonecoding.config.AppConfig;
 import com.hodoleg.clonecoding.request.Login;
 import com.hodoleg.clonecoding.request.SignUp;
-import com.hodoleg.clonecoding.response.SessionResponse;
+import com.hodoleg.clonecoding.response.TokenResponse;
 import com.hodoleg.clonecoding.service.AuthService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -23,7 +23,7 @@ public class AuthController {
     private final AuthService authService;
     private final AppConfig appConfig;
     @PostMapping("/auth/login")
-    public SessionResponse login(@RequestBody Login login){
+    public TokenResponse login(@RequestBody Login login){
         Long id = authService.login(login);
 
         /* 쿠키 방식
@@ -44,7 +44,8 @@ public class AuthController {
                 .signWith(key)
                 .setIssuedAt(new Date())
                 .compact();
-        return new SessionResponse(jws);
+
+        return new TokenResponse(jws);
     }
     @PostMapping("/auth/sign")
     public void sign(@RequestBody SignUp signUp){
