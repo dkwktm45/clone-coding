@@ -2,6 +2,7 @@ package com.hodoleg.clonecoding.controller;
 
 import com.hodoleg.clonecoding.config.AppConfig;
 import com.hodoleg.clonecoding.request.Login;
+import com.hodoleg.clonecoding.request.SignUp;
 import com.hodoleg.clonecoding.response.SessionResponse;
 import com.hodoleg.clonecoding.service.AuthService;
 import io.jsonwebtoken.Jwts;
@@ -44,5 +45,9 @@ public class AuthController {
                 .setIssuedAt(new Date())
                 .compact();
         return new SessionResponse(jws);
+    }
+    @PostMapping("/auth/sign")
+    public void sign(@RequestBody SignUp signUp){
+        authService.signin(signUp);
     }
 }

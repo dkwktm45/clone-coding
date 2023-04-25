@@ -2,7 +2,6 @@ package com.hodoleg.clonecoding.config;
 
 import com.hodoleg.clonecoding.config.data.UserSession;
 import com.hodoleg.clonecoding.exception.Unauthorized;
-import com.hodoleg.clonecoding.respository.SessionRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -18,7 +17,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthResolver implements HandlerMethodArgumentResolver {
-    private final SessionRepository sessionRepository;
     private final AppConfig appConfig;
     @Override
     public boolean supportsParameter(MethodParameter parameter) {

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hodoleg.clonecoding.domain.AuthUser;
 import com.hodoleg.clonecoding.domain.Session;
 import com.hodoleg.clonecoding.request.Login;
-import com.hodoleg.clonecoding.respository.SessionRepository;
+import com.hodoleg.clonecoding.request.SignUp;
 import com.hodoleg.clonecoding.respository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -125,6 +125,25 @@ class AuthControllerTest {
                         .cookie(mockCookie)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
+                .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("회원가입 /auth/sign")
+    void test5() throws Exception{
+        //given
+        var signUser = SignUp.builder()
+                .name("LeeJinYoung")
+                .password("dkwktm45")
+                .email("dkwktm45@gmail.com")
+                .build();
+
+        // expected
+        mockMvc.perform(post("/auth/sign")
+                        .content(objectMapper.writeValueAsString(signUser))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andDo(print());
 
     }

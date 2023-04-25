@@ -1,6 +1,5 @@
 package com.hodoleg.clonecoding.config;
 
-import com.hodoleg.clonecoding.respository.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -12,11 +11,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final SessionRepository sessionRepository;
     private final AppConfig appConfig;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new AuthResolver(sessionRepository , appConfig));
+        resolvers.add(new AuthResolver( appConfig));
     }
 }
