@@ -6,6 +6,7 @@ import com.hodoleg.clonecoding.exception.InvalidSigninInformation;
 import com.hodoleg.clonecoding.request.Login;
 import com.hodoleg.clonecoding.request.SignUp;
 import com.hodoleg.clonecoding.respository.UserRepository;
+import com.hodoleg.clonecoding.srypto.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +17,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
-
+    private final PasswordEncoder encoder;
     @Transactional
-    public Long signin(Login login){
-        AuthUser authUser = userRepository.findByEmailAndPassword(login.getEmail(),login.getPassword())
-                .orElseThrow(() -> new InvalidSigninInformation());
+    public Long login(Login login){
+        AuthUser authUser = userRepository.findByEmail(login.getEmail())
+                .orElseThrow(InvalidSigninInformation::new);
+
+        if(!encoder.matches(login.getPassword(), authUser.getPassword())){
+            throw new InvalidSigninInformation();
+        }
+
         return authUser.getId();
     }
 
@@ -29,9 +35,12 @@ public class AuthService {
         if(userOptional.isPresent()){
             throw new AlreadyExistsEmailException();
         }
+
+        String encoderPassword = encoder.encrpto(signUp.getPassword());
+
         var authUser = AuthUser.builder()
                 .name(signUp.getName())
-                .password(signUp.getPassword())
+                .password(encoderPassword)
                 .email(signUp.getEmail())
                 .build();
         userRepository.save(authUser);

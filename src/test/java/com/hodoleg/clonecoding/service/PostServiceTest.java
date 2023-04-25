@@ -179,6 +179,7 @@ class PostServiceTest {
                 .title("이진영")
                 .content("월산동")
                 .build();
+
         postRepository.save(requestPost);
         //
         //expected

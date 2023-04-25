@@ -24,7 +24,7 @@ public class AuthController {
     private final AppConfig appConfig;
     @PostMapping("/auth/login")
     public SessionResponse login(@RequestBody Login login){
-        Long id = authService.signin(login);
+        Long id = authService.login(login);
 
         /* 쿠키 방식
         ResponseCookie cookie = ResponseCookie.from("SESSION",accessToken)
