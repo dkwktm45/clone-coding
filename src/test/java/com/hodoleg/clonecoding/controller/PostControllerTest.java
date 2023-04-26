@@ -233,4 +233,8 @@ class PostControllerTest {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
     }
+    // Spring RestDocs
+    // - 운영코드에 영향이 미치지 않는다.
+    // - 변경된 기능에 대해서 문서를 수정하지 않는 경우가 있는데
+    // - Test 케이스 실행 -> 문서를 생성해준다.
 }

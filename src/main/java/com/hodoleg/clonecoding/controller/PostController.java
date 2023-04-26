@@ -24,6 +24,7 @@ public class PostController {
     public Long foo(UserSession userSession){
         return userSession.id;
     }
+
     @PostMapping("/posts")
     public void get(@RequestBody @Valid PostCreate request) {
             request.validate();
