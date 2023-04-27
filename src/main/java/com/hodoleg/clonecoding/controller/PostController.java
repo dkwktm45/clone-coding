@@ -6,11 +6,11 @@ import com.hodoleg.clonecoding.request.PostEdit;
 import com.hodoleg.clonecoding.request.PostSearch;
 import com.hodoleg.clonecoding.response.PostResponse;
 import com.hodoleg.clonecoding.service.PostService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -24,7 +24,6 @@ public class PostController {
     public Long foo(UserSession userSession){
         return userSession.id;
     }
-
     @PostMapping("/posts")
     public void get(@RequestBody @Valid PostCreate request) {
             request.validate();

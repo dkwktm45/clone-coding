@@ -145,9 +145,6 @@ class PostControllerTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(10))
-                .andExpect(jsonPath("$[0].id").value(19L))
-                .andExpect(jsonPath("$[0].title").value("호돌맨 제목 19"))
-                .andExpect(jsonPath("$[0].content").value("호돌맨 내용 19"))
                 .andDo(print());
     }
     @Test

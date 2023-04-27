@@ -8,7 +8,6 @@ import com.hodoleg.clonecoding.request.PostEdit;
 import com.hodoleg.clonecoding.request.PostSearch;
 import com.hodoleg.clonecoding.response.PostResponse;
 import com.hodoleg.clonecoding.respository.PostRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,6 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Slf4j
 @Service

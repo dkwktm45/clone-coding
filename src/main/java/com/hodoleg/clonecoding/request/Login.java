@@ -1,10 +1,11 @@
 package com.hodoleg.clonecoding.request;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.validation.constraints.NotBlank;
 
 @Getter @Setter
 @ToString

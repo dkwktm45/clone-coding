@@ -1,9 +1,11 @@
 package com.hodoleg.clonecoding.domain;
 
-import jakarta.persistence.*;
 import lombok.*;
 
-@Entity @Getter
+import javax.persistence.*;
+
+@Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Post {
     @Id

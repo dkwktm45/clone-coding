@@ -1,11 +1,10 @@
 package com.hodoleg.clonecoding.respository;
 
 import com.hodoleg.clonecoding.domain.Post;
-import com.hodoleg.clonecoding.domain.QPost;
 import com.hodoleg.clonecoding.request.PostSearch;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-
+import com.hodoleg.clonecoding.domain.QPost;
 import java.util.List;
 
 @RequiredArgsConstructor
