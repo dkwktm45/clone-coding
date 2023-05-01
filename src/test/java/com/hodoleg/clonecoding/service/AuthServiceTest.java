@@ -43,13 +43,14 @@ class AuthServiceTest {
         //when
         authService.signin(authUser);
         //then
-        assertEquals(1L , userRepository.count());
+        assertEquals(1L, userRepository.count());
         AuthUser result = userRepository.findAll().iterator().next();
-        assertEquals("LeeJinYoung",result.getName());
-        assertEquals("dkwktm45@gmail.com",result.getEmail());
+        assertEquals("LeeJinYoung", result.getName());
+        assertEquals("dkwktm45@gmail.com", result.getEmail());
         assertNotNull(result.getPassword());
 
     }
+
     @Test
     @DisplayName("회원가입시 이미 가입된 이메일로 AlreadyExistsEmailException 에러 발생")
     void test2() {
@@ -65,9 +66,11 @@ class AuthServiceTest {
                 .password("dkwktm45").build());
         //when
         AlreadyExistsEmailException error = Assertions.assertThrows(AlreadyExistsEmailException.class
-                ,() -> {authService.signin(authUser);});
+                , () -> {
+                    authService.signin(authUser);
+                });
         //then
-        assertEquals("이미 가입된 이메일입니다." , error.getMessage());
+        assertEquals("이미 가입된 이메일입니다.", error.getMessage());
     }
 
 
