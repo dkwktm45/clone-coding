@@ -3,7 +3,6 @@ package com.hodoleg.clonecoding.service;
 import com.hodoleg.clonecoding.domain.AuthUser;
 import com.hodoleg.clonecoding.exception.AlreadyExistsEmailException;
 import com.hodoleg.clonecoding.exception.InvalidSigninInformation;
-import com.hodoleg.clonecoding.request.Login;
 import com.hodoleg.clonecoding.request.SignUp;
 import com.hodoleg.clonecoding.respository.UserRepository;
 import com.hodoleg.clonecoding.srypto.PasswordEncoder;
@@ -71,45 +70,5 @@ class AuthServiceTest {
         assertEquals("이미 가입된 이메일입니다." , error.getMessage());
     }
 
-    @Test
-    @DisplayName("로그인 성공")
-    void test3() {
-        //given
-        String encryptedPassword = encoder.encrypt("1234");
 
-        AuthUser authUser = AuthUser.builder()
-                .name("LeeJinYoung")
-                .email("dkwktm45@gmail.com")
-                .password(encryptedPassword).build();
-        userRepository.save(authUser);
-
-        Login login = Login.builder()
-                .email(authUser.getEmail())
-                .password("1234")
-                .build();
-        //when
-        Long userId = authService.login(login);
-
-        //then
-        assertNotNull(userId);
-    }
-    @Test
-    @DisplayName("비밀번호 실패")
-    void test4() {
-        //given
-        var authUser = SignUp.builder()
-                .name("LeeJinYoung")
-                .password("dkwktm45")
-                .email("dkwktm45@gmail.com")
-                .build();
-        authService.signin(authUser);
-
-        Login login = Login.builder()
-                .email(authUser.getEmail())
-                .password("12345")
-                .build();
-        //when
-        assertThrows(InvalidSigninInformation.class ,
-                () -> {authService.login(login);});
-    }
 }

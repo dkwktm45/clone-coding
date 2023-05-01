@@ -31,12 +31,5 @@ public class AuthUser {
         this.createdAt = LocalDateTime.now();
     }
 
-    @OneToMany(cascade = CascadeType.ALL , mappedBy = "authUser")
-    private List<Session> sessions = new ArrayList<>();
 
-    public Session addSession(){
-        Session session = Session.builder().authUser(this).build();
-        sessions.add(session);
-        return session;
-    }
 }
