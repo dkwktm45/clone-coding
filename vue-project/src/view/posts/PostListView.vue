@@ -1,0 +1,51 @@
+<template>
+	<div>
+		<h2>게시글 리스트</h2>
+		<hr class="my-4" />
+		<div class="row g-3">
+			<div v-for="post in posts" :key="post.id" class="col-4">
+				<PostItem
+					:title="post.title"
+					:content="post.content"
+					:createdAt="post.createdAt"
+					@click="goPage(post.id)"
+				></PostItem>
+			</div>
+		</div>
+		<hr class="my-4" />
+		<AppCard>
+			<PostDetailView :id="1"></PostDetailView>
+		</AppCard>
+	</div>
+</template>
+
+<script setup>
+import PostItem from '@/components/posts/PostItem.vue';
+import AppCard from '@/components/AppCard.vue';
+
+import PostDetailView from '@/view/posts/PostDetailView.vue';
+import { getPosts } from '@/api/posts.js';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+const posts = ref([]);
+const router = useRouter();
+const fetchPosts = () => {
+	posts.value = getPosts();
+};
+fetchPosts();
+
+const goPage = id => {
+	// router.push(`/posts/${id}`);
+	router.push({
+		name: 'PostDetailView',
+		params: {
+			id,
+		},
+		query: {
+			testText: 'hello',
+		},
+	});
+};
+</script>
+
+<style lang="scss" scoped></style>
