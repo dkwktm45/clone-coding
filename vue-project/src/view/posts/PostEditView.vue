@@ -1,41 +1,68 @@
 <template>
-	<div>
-		<h2>게시글 수정</h2>
-		<hr class="my-4" />
-		<form @submit.prevent>
-			<div class="mb-3">
-				<label for="exampleFormControlInput1" class="form-label">제목</label>
-				<input type="text" class="form-control" id="title" placeholder="제목" />
-			</div>
-			<div class="mb-3">
-				<label for="exampleFormControlTextarea1" class="form-label">내용</label>
-				<textarea class="form-control" id="content" rows="3"></textarea>
-			</div>
-			<div class="pt-4">
-				<button
-					type="button"
-					class="btn btn-outline-danger me-2"
-					@click="goDetailPage"
-				>
-					취소
-				</button>
-				<button class="btn btn-primary">수정</button>
-			</div>
-		</form>
-	</div>
+  <div>
+    <h2>게시글 수정</h2>
+    <hr class="my-4" />
+    <PostForm v-model:title="form.title" v-model:content="form.content" @submit.prevent="edit">
+      <template #actions>
+        <button type="button" class="btn btn-outline-danger" @click="goDetailPage">취소</button>
+        <button class="btn btn-primary">수정</button>
+      </template>
+    </PostForm>
+    <AppAlert :show="showAlert" :message="alertMessage" :type="alertType" />
+  </div>
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
-const router = useRouter();
-const route = useRoute();
-const id = route.params.id;
+import { useRoute, useRouter } from 'vue-router'
+import { ref } from 'vue'
+import AppAlert from '@/components/AppAlert.vue'
+import { getPostById, updatePost } from '@/api/posts'
+import PostForm from '@/components/posts/PostForm.vue'
+const router = useRouter()
+const route = useRoute()
+const id = route.params.id
+const form = ref({
+  title: null,
+  content: null,
+  createdAt: null
+})
 
+const fetchPost = async () => {
+  const { data } = await getPostById(id)
+  setFrom(data)
+}
+fetchPost()
+const setFrom = ({ title, content, createdAt }) => {
+  form.value.title = title
+  form.value.content = content
+  form.value.createdAt = createdAt
+}
+const edit = async () => {
+  try {
+    await updatePost(id, { ...form.value })
+    router.push({ name: 'PostDetailView', params: { id } })
+    vAlert('수정이 완료 됐습니다.', 'success')
+  } catch (e) {
+    console.error(e)
+    vAlert('네트워크 오류!')
+  }
+}
 const goDetailPage = () =>
-	router.push({
-		name: 'PostListView',
-		params: { id },
-	});
+  router.push({
+    name: 'PostListView',
+    params: { id }
+  })
+const showAlert = ref(false)
+const alertMessage = ref('')
+const vAlert = (mewssage, type = 'error') => {
+  alertMessage.value = mewssage
+  showAlert.value = true
+  alertType.value = type
+  setTimeout(() => {
+    showAlert.value = false
+  }, 2000)
+}
+const alertType = ref('')
 </script>
 
 <style lang="scss" scoped></style>

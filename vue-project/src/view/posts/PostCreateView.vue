@@ -1,38 +1,39 @@
 <template>
-	<div>
-		<h2>게시글 등록</h2>
-		<hr class="my-4" />
-		<form @submit.prevent>
-			<div class="mb-3">
-				<label for="exampleFormControlInput1" class="form-label">제목</label>
-				<input type="text" class="form-control" id="title" placeholder="제목" />
-			</div>
-			<div class="mb-3">
-				<label for="exampleFormControlTextarea1" class="form-label">내용</label>
-				<textarea class="form-control" id="content" rows="3"></textarea>
-			</div>
-			<div class="pt-4">
-				<button
-					type="button"
-					class="btn btn-outline-dark me-2"
-					@click="goListPage"
-				>
-					목록
-				</button>
-				<button class="btn btn-primary">저장</button>
-			</div>
-		</form>
-	</div>
+  <div>
+    <h2>게시글 등록</h2>
+    <hr class="my-4" />
+    <PostForm v-model:title="form.title" v-model:content="form.content" @submit.prevent="save">
+      <template #actions>
+        <button type="button" class="btn btn-outline-dark" @click="goListPage">목록</button>
+        <button class="btn btn-primary">저장</button>
+      </template>
+    </PostForm>
+  </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
-const router = useRouter();
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { createPost } from '@/api/posts'
+import PostForm from '@/components/posts/PostForm.vue'
 
-const goListPage = () =>
-	router.push({
-		name: 'PostListView',
-	});
+const router = useRouter()
+const form = ref({
+  title: null,
+  content: null,
+  createdAt: null
+})
+const save = () => {
+  try {
+    createPost({
+      ...form.value,
+      createdAt: Date.now()
+    })
+    router.push({ name: 'PostListView' })
+  } catch (error) {
+    console.error(error)
+  }
+}
+const goListPage = () => router.push({ name: 'PostList' })
 </script>
-
 <style lang="scss" scoped></style>
