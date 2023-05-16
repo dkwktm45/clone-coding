@@ -8,7 +8,7 @@
         <button class="btn btn-primary">수정</button>
       </template>
     </PostForm>
-    <AppAlert :show="showAlert" :message="alertMessage" :type="alertType" />
+    <AppAlert :items="alert" />
   </div>
 </template>
 
@@ -40,11 +40,10 @@ const setFrom = ({ title, content, createdAt }) => {
 const edit = async () => {
   try {
     await updatePost(id, { ...form.value })
-    router.push({ name: 'PostDetailView', params: { id } })
+    // router.push({ name: 'PostDetailView', params: { id } })
     vAlert('수정이 완료 됐습니다.', 'success')
   } catch (e) {
-    console.error(e)
-    vAlert('네트워크 오류!')
+    vAlert(e.message)
   }
 }
 const goDetailPage = () =>
@@ -52,17 +51,15 @@ const goDetailPage = () =>
     name: 'PostListView',
     params: { id }
   })
-const showAlert = ref(false)
-const alertMessage = ref('')
-const vAlert = (mewssage, type = 'error') => {
-  alertMessage.value = mewssage
-  showAlert.value = true
-  alertType.value = type
+
+const alert = ref([])
+const vAlert = (message, type = 'error') => {
+  alert.value.push({ message, type })
   setTimeout(() => {
-    showAlert.value = false
+    // showAlert.value = false
+    alert.value.shift()
   }, 2000)
 }
-const alertType = ref('')
 </script>
 
 <style lang="scss" scoped></style>
