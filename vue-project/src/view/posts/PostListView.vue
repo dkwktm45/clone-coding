@@ -7,23 +7,29 @@
 			v-model:limit="params._limit"
 		/>
 		<hr class="my-4" />
-		<AppGrid :items="posts">
-			<template v-slot="{ item }">
-				<PostItem
-					:title="item.title"
-					:content="item.content"
-					:created-at="item.createdAt"
-					@click="goPage(item.id)"
-					@modal="openModal(item)"
-				></PostItem>
-			</template>
-		</AppGrid>
+		<AppLoading v-if="loading" />
 
-		<AppPagination
-			:current-page="params._page"
-			:page-count="pageCount"
-			@page="page => (params._page = page)"
-		/>
+		<AppError v-else-if="error" :message="error.message" />
+
+		<template v-else>
+			<AppGrid :items="posts">
+				<template v-slot="{ item }">
+					<PostItem
+						:title="item.title"
+						:content="item.content"
+						:created-at="item.createdAt"
+						@click="goPage(item.id)"
+						@modal="openModal(item)"
+					></PostItem>
+				</template>
+			</AppGrid>
+
+			<AppPagination
+				:current-page="params._page"
+				:page-count="pageCount"
+				@page="page => (params._page = page)"
+			/>
+		</template>
 		<Teleport to="#modal">
 			<PostModel
 				v-model="show"
@@ -46,36 +52,31 @@
 import PostItem from '@/components/posts/PostItem.vue';
 import PostFilter from '@/components/posts/PostFilter.vue';
 import PostDetailView from '@/view/posts/PostDetailView.vue';
-import { getPosts } from '@/api/posts.js';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import PostModel from '@/components/posts/PostModel.vue';
+import { useAxios } from '@/hooks/useAxios';
 // paging data
 const params = ref({
 	_sort: 'createdAt',
 	_order: 'desc',
 	_limit: 3,
 	_page: 1,
-	title_like: 9,
 });
-const totalCount = ref(0);
+
+const totalCount = computed(() => response.value.headers['x-total-count']);
 const pageCount = computed(() =>
 	Math.ceil(totalCount.value / params.value._limit),
 );
-const posts = ref([]);
 const router = useRouter();
-const fetchPosts = async () => {
-	try {
-		const { data, headers } = await getPosts(params.value); // 구조분해 할당?
-		posts.value = data;
-		totalCount.value = headers['x-total-count'];
-	} catch (e) {
-		console.log('error : ', e);
-	}
-};
-fetchPosts();
 
-watchEffect(fetchPosts); // 변경점이 생겼을 때 다시 값을 나타내게 해준다.
+const {
+	response,
+	error,
+	data: posts,
+	loading,
+} = useAxios('/posts', { params });
+
 const goPage = id => {
 	// router.push(`/posts/${id}`);
 	router.push({

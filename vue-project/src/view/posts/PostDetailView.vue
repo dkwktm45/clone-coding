@@ -1,11 +1,16 @@
 <template>
-	<div>
+	<AppLoading v-if="loading" />
+
+	<AppError v-else-if="error" :message="error.message" />
+
+	<div v-else>
 		<h2>{{ post.title }}</h2>
 		<p>{{ post.content }}</p>
 		<p class="text-muted">
 			{{ $dayjs(post.createdAt).format('YYYY. MM. DD') }}
 		</p>
 		<hr class="my-4" />
+		<AppError v-if="removeError" :message="removeError.message" />
 		<div class="row g-2">
 			<div class="col-auto">
 				<div class="btn btn-outline-dark">이전글</div>
@@ -21,7 +26,21 @@
 				<div class="btn btn-outline-primary" @click="goEditPage">수정</div>
 			</div>
 			<div class="col-auto">
-				<div class="btn btn-outline-danger" @click="remove">삭제</div>
+				<button
+					class="btn btn-outline-danger"
+					@click="remove"
+					:disabled="removeLoading"
+				>
+					<template v-if="removeLoading">
+						<span
+							class="spinner-border spinner-border-sm"
+							role="status"
+							aria-hidden="true"
+						></span>
+						<span class="sr-only">Loading...</span>
+					</template>
+					<template v-else>삭제</template>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -29,26 +48,16 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { deletePost, getPostById } from '@/api/posts';
+import { deletePost } from '@/api/posts';
 import { ref } from 'vue';
-const post = ref({});
+import { useAxios } from '@/hooks/useAxios';
 const props = defineProps({
 	id: [String, Number],
 });
+
 const router = useRouter();
-// ref의 장점 한번에 객체 할당을 할 수 있다.
-const fetchPost = async () => {
-	const { data } = await getPostById(props.id);
-	setPost(data);
-};
-const setPost = ({ title, content }) => {
-	post.value.title = title;
-	post.value.content = content;
-	post.value.createdAt = Date.now();
-};
-// 반면 reactive는 한번에 하나의 데이터만 할당 가능
-// form.title = data.title; --> 객체 할당 불가능
-fetchPost();
+const { error, data: post, loading } = useAxios(`/posts/${props.id}`);
+
 const goListPage = () =>
 	router.push({
 		name: 'PostListView',
@@ -61,13 +70,29 @@ const goEditPage = () => {
 	});
 };
 
+const {
+	error: removeError,
+	loading: removeLoading,
+	execute,
+} = useAxios(
+	`/posts/${props.id}`,
+	{ method: 'delete' },
+	{
+		immediate: false,
+		onSuccess: () => {
+			vSuccess('삭제가 완료되었습니다.');
+			router.push({ name: 'PostList' });
+		},
+		onError: err => {
+			vAlert(err.message);
+		},
+	},
+);
 const remove = async () => {
-	try {
-		await deletePost(props.id);
-		router.push({ name: 'PostListView' });
-	} catch (e) {
-		console.log('error: ', e);
+	if (confirm('삭제 하시겠습니까?') === false) {
+		return;
 	}
+	execute();
 };
 </script>
 
