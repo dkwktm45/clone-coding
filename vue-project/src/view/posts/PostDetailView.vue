@@ -5,6 +5,7 @@
 
 	<div v-else>
 		<h2>{{ post.title }}</h2>
+		<p>id: {{ props.id }}, isOdd: {{ isOdd }}</p>
 		<p>{{ post.content }}</p>
 		<p class="text-muted">
 			{{ $dayjs(post.createdAt).format('YYYY. MM. DD') }}
@@ -48,16 +49,20 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { deletePost } from '@/api/posts';
-import { ref } from 'vue';
 import { useAxios } from '@/hooks/useAxios';
+import { computed } from 'vue';
+import { useNumber } from '@/composables/number';
+import { toRefs } from 'vue';
+import { useAlert } from '@/composables/alert';
 const props = defineProps({
 	id: [String, Number],
 });
 
 const router = useRouter();
 const { error, data: post, loading } = useAxios(`/posts/${props.id}`);
-
+const { id: idRef } = toRefs(props);
+const { isOdd } = useNumber(idRef);
+const { vAlert, vSuccess } = useAlert();
 const goListPage = () =>
 	router.push({
 		name: 'PostListView',

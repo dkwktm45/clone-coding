@@ -20,6 +20,7 @@
 						:created-at="item.createdAt"
 						@click="goPage(item.id)"
 						@modal="openModal(item)"
+						@preview="selectPreview(item.id)"
 					></PostItem>
 				</template>
 			</AppGrid>
@@ -39,10 +40,10 @@
 			>
 			</PostModel>
 		</Teleport>
-		<template v-if="posts && posts.length > 0">
+		<template v-if="previewId">
 			<hr class="my-5" />
 			<AppCard>
-				<PostDetailView :id="posts[0].id"></PostDetailView>
+				<PostDetailView :id="previewId"></PostDetailView>
 			</AppCard>
 		</template>
 	</div>
@@ -56,6 +57,10 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import PostModel from '@/components/posts/PostModel.vue';
 import { useAxios } from '@/hooks/useAxios';
+
+const previewId = ref(null);
+const selectPreview = id => (previewId.value = id);
+
 // paging data
 const params = ref({
 	_sort: 'createdAt',
