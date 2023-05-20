@@ -10,6 +10,7 @@ import NestedView from '@/view/nested/NestedView.vue';
 import NestedOneView from '@/view/nested/NestedOneView.vue';
 import NestedTwoView from '@/view/nested/NestedTwoView.vue';
 import NestedHomeView from '@/view/nested/NestedHomeView.vue';
+import MyPage from '@/view/MyPage.vue';
 
 const routes = [
 	{
@@ -44,6 +45,15 @@ const routes = [
 		component: PostEditView,
 	},
 	{
+		path: '/my',
+		name: 'MyPageView',
+		component: MyPage,
+		beforeEnter: (to, from) => {
+			// console.log(to);
+			// console.log(from);
+		},
+	},
+	{
 		path: '/:pathMatch(.*)*',
 		name: 'NotFound',
 		component: NotFoundView,
@@ -76,5 +86,10 @@ const router = createRouter({
 	history: createWebHistory(),
 	routes: routes,
 });
+
+/*router.beforeEach((to, from) => {
+	console.log('to: ', to);
+	console.log('from: ', from);
+});*/
 
 export default router;

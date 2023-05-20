@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import { useAxios } from '@/hooks/useAxios';
 import { useNumber } from '@/composables/number';
 import { toRefs } from 'vue';
@@ -97,6 +97,21 @@ const remove = async () => {
 		return;
 	}
 	execute();
+};
+
+onBeforeRouteUpdate(() => {
+	console.log('update');
+});
+
+onBeforeRouteLeave(() => {
+	console.log('leave');
+});
+</script>
+<script>
+export default {
+	beforeRouterEnter() {
+		console.log('enter');
+	},
 };
 </script>
 
