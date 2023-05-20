@@ -38,8 +38,6 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
-import { ref } from 'vue';
-import { updatePost } from '@/api/posts';
 import PostForm from '@/components/posts/PostForm.vue';
 import { useAlert } from '@/composables/alert';
 import { useAxios } from '@/hooks/useAxios';

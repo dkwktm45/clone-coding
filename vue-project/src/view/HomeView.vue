@@ -9,31 +9,27 @@
 		<AppGrid :items="items" v-slot="{ item }" col-class="col-6">
 			<AppCard>{{ item }}</AppCard>
 		</AppGrid>
-		<!--		<hr />
-		<h2>{{ $person.name }}</h2>
-		<hr />
-		<button @click="person.say()">{{ $person.name }}</button>-->
+		<h2>store</h2>
+		<p>counter: {{ store.counter }}</p>
+		<p>doubleCount: {{ store.doubleCount }}</p>
+		<p>구조분해 counter: {{ counter }}</p>
+		<p>구조분해 doubleCount: {{ doubleCount }}</p>
+		<button @click="store.increment()">click!!</button>
 	</div>
 </template>
 
-<script>
-export default {
-	created() {
-		// console.log(this.$person.name);
-		// this.$person.say();
-	},
-};
-</script>
+<script></script>
 <script setup>
-import { useRoute } from 'vue-router';
 import { ref } from 'vue';
-const route = useRoute();
+import { useCounterStore } from '@/store/counter';
+import { storeToRefs } from 'pinia';
 
 const items = ref(['사과', '딸기', '포도', '바나나']);
-console.log('route path', route.path);
+const store = useCounterStore();
 
-// const person = inject('person');
-// console.log('person.name : ', person.name);
+// 구조분해 할당을 할때는 store 내부에 정의된 메소드 storeToRefs를 사용하자
+// - 구조분해 할당을 하게 된다면 반응형을 잃어버리기 때문!!
+const { counter, doubleCount } = storeToRefs(store);
 </script>
 
 <style lang="scss" scoped></style>

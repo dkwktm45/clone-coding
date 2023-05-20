@@ -7,12 +7,11 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import globalDirective from '@/plugins/global-directive';
 import dayjs from '@/plugins/dayjs';
+import { createPinia } from 'pinia';
 
 const app = createApp(App);
 app.use(globalDirective);
+app.use(createPinia()); // store
 app.use(router);
 app.use(dayjs);
 app.mount('#app');
-
-// console.log('VITE_APP_API_URL: ', import.meta.env.VITE_APP_API_URL)
-// console.log('base url: ', import.meta.env.BASE_URL)

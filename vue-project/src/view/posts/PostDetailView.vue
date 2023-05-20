@@ -50,7 +50,6 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { useAxios } from '@/hooks/useAxios';
-import { computed } from 'vue';
 import { useNumber } from '@/composables/number';
 import { toRefs } from 'vue';
 import { useAlert } from '@/composables/alert';
